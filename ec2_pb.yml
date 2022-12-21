@@ -1,0 +1,36 @@
+---
+ - name:  Creating Ec2 Instance
+   hosts: localhost
+   connection: local
+   gather_facts: False
+   become: False
+   tags: provisioning
+
+   vars:
+     keypair: mylinux
+     instance_type: t2.small
+     image: ami-0cca134ec43cf708f
+     wait: yes
+     assign_public_ip: yes
+     count: 1
+     region: ap-south-1
+     group_id: sg-0abee2b00f048f0bc
+     vpc_subnet_id: subnet-01ac2edd044abb9ef
+     aws_access_key: 'AKIAZKHQPE23JWJ5EAVW'
+     aws_secret_key: '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'
+
+   tasks:
+     - pip:
+        name: boto
+     - name: Task # 2 Launch the new EC2 Instance
+       local_action:  ec2
+                      group_id={{ group_id }}
+                      instance_type={{ instance_type}}
+                      image={{ image }}
+                      wait=true
+                      region={{ region }}
+                      keypair={{ keypair }}
+                      count={{count}}
+                      aws_access_key={{ aws_access_key }}
+                      aws_secret_key={{ aws_secret_key }}
+       register: ec2
